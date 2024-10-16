@@ -1,0 +1,3 @@
+2024-10-15 14:00:01,410 - ERROR - Error: not all arguments converted during string formatting
+2024-10-15 14:00:01,412 - INFO - Updated medium_scale_nm in tb_sales_by_prod based on kicc_product_list.
+2024-10-15 14:00:01,412 - INFO - Daily ETL job completed from 20241014 to 20241015

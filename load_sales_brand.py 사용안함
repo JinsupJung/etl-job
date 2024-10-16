@@ -1,0 +1,67 @@
+import pymysql
+import logging
+from datetime import datetime, timedelta
+
+# MySQL database connection details
+db_config = {
+    "host": "175.196.7.45",
+    "user": "nolboo",
+    "password": "2024!puser",
+    "database": "nolboo"
+}
+
+# Logging configuration
+today = datetime.today().strftime('%Y%m%d')
+log_filename = f"/home/nolboo/etl-job/log/sales_data_log_{today}.txt"
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[logging.FileHandler(log_filename), logging.StreamHandler()]
+)
+
+def etl_job():
+    logging.info("Starting ETL job")
+    
+    # Set the date range from yesterday to today
+    end_date = datetime.today().date()
+    start_date = end_date - timedelta(days=1)
+
+    logging.info(f"Processing data from {start_date} to {end_date}")
+
+    # Connect to MySQL database
+    connection = pymysql.connect(**db_config)
+
+    try:
+        with connection.cursor() as cursor:
+            # Step 1: Fetch data from tb_sales_by_store and tb_store_type
+            query = """
+            SELECT s.sale_dy, s.chain_no, s.chain_name, s.NET_maechool, st.brand, st.store_type
+            FROM tb_sales_by_store s
+            JOIN tb_store_type st ON s.chain_no = st.chain_no
+            WHERE s.sale_dy BETWEEN %s AND %s
+            """
+            cursor.execute(query, (start_date, end_date))
+            sales_data = cursor.fetchall()
+
+            # Step 2: Insert or update data into tb_sales_by_brand
+            insert_query = """
+            INSERT INTO tb_sales_by_brand (
+                sale_dy, chain_no, chain_name, brand, store_type, NET_maechool
+            ) VALUES (%s, %s, %s, %s, %s, %s)
+            ON DUPLICATE KEY UPDATE
+                NET_maechool = VALUES(NET_maechool)
+            """
+            for row in sales_data:
+                cursor.execute(insert_query, row)
+
+            connection.commit()
+            logging.info("ETL job completed successfully")
+    
+    except Exception as e:
+        logging.error(f"Error during ETL job: {e}")
+    
+    finally:
+        connection.close()
+
+if __name__ == "__main__":
+    etl_job()

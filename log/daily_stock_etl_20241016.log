@@ -1,0 +1,10 @@
+2024-10-16 03:00:01,086 - INFO - Starting ETL process...
+2024-10-16 03:00:01,379 - INFO - Connected to Informix database.
+2024-10-16 03:00:01,735 - INFO - Creating view on Informix...
+2024-10-16 03:00:01,751 - INFO - View temp_view_jego_subul2020006 created successfully.
+2024-10-16 03:00:01,756 - INFO - Connected to Informix database.
+2024-10-16 03:00:01,756 - INFO - Executing query on Informix...
+2024-10-16 03:00:02,592 - INFO - Fetched 348 records from Informix.
+2024-10-16 03:00:02,620 - INFO - Connected to MySQL database.
+2024-10-16 03:00:02,666 - INFO - Data inserted into MySQL successfully.
+2024-10-16 03:00:02,667 - INFO - ETL process completed successfully.
