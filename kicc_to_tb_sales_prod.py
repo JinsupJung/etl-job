@@ -87,7 +87,23 @@ def transfer_data(start_date, end_date):
                 )
 
                 if data_exists(cursor, record[1], sale_dy, record[3]):
-                    update_data(cursor, data_tuple[2:] + (record[1], sale_dy, record[3]))
+                    # update_data(cursor, data_tuple[2:] + (record[1], sale_dy, record[3]))
+                    # update_data(cursor, data_tuple[2:] + (data_tuple[1], data_tuple[0], data_tuple[3]))
+                    # Pass the first 8 elements for SET clause and the last 3 elements for WHERE clause
+                    # update_data(cursor, data_tuple[2:] + data_tuple[:2] + (data_tuple[3],))
+                    update_data(cursor, (
+                        data_tuple[2],  # chain_name
+                        data_tuple[4],  # prod_name
+                        data_tuple[5],  # maechool_count
+                        data_tuple[6],  # chong_maechool
+                        data_tuple[7],  # soon_maechool
+                        data_tuple[8],  # NET_maechool
+                        data_tuple[9],  # vat
+                        data_tuple[10], # discount
+                        data_tuple[1],  # chain_no (for WHERE)
+                        data_tuple[0],  # sale_dy (for WHERE)
+                        data_tuple[3]   # prod_code (for WHERE)
+                    ))
                     logging.info(f"Updated data for chain_no {record[1]} and prod_code {record[3]} on {sale_dy}.")
                 else:
                     insert_data(cursor, data_tuple)
